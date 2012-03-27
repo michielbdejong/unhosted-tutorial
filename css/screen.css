@@ -6,7 +6,6 @@
   box-sizing: border-box;
 }
 
-
 body {
   font: 14px "Helvetica Neue", Helvetica, Arial, sans-serif;
   background: #efefef
@@ -104,7 +103,6 @@ input[type='text'] {
 #connection input[type='text'] {
   width: 250px;
 }
-
 
 .hidden {
   display: none;
