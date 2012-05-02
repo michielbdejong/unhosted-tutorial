@@ -27,7 +27,7 @@
 
       helper.showSpinner('fetchPublicSpinner');
 
-      storage.getData('public', key, function(error, data) {
+      storage.getData('public/tutorial', key, function(error, data) {
         if(!error && data != "null") {
           $('#publicValue').val(data);
         }
@@ -44,7 +44,7 @@
 
       helper.showSpinner('publishPublicSpinner');
 
-      storage.putData('public', key, value, function(error) {
+      storage.putData('public/tutorial', key, value, function(error) {
         if (!error) {
           $('#publicValue').val('');
         }
@@ -56,7 +56,7 @@
     });
 
     $('#authorize').on('click', function() {
-      storage.authorize(['public', 'tutorial']);
+      storage.authorize(['public/tutorial:rw', 'tutorial:rw']);
       return false;
     });
 

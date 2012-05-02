@@ -59,8 +59,8 @@ var tutorial = (function() {
     var storageInfo = JSON.parse(localStorage.getItem('userStorageInfo'));
     var client;
 
-    if (category == 'public') {
-      client = remoteStorage.createClient(storageInfo, 'public');
+    if (category == 'public/tutorial') {
+      client = remoteStorage.createClient(storageInfo, 'public/tutorial');
     } else {
       var token = localStorage.getItem('bearerToken');
       client = remoteStorage.createClient(storageInfo, category, token);
