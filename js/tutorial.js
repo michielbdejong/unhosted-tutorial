@@ -29,7 +29,7 @@ var tutorial = (function() {
   // remoteStorage provider.
   function authorize(categories) {
     var storageInfo = JSON.parse(localStorage.getItem('userStorageInfo'));
-    var redirectUri = location.protocol + '//' + location.host + '/receive_token.html';
+    var redirectUri = location.protocol + '//' + location.host + '/Node/unhosted-tutorial/receive_token.html';
 
     // `createOAuthAddress` takes the `storageInfo`, the categories that we
     // intend to access and a redirect URI that the storage provider sends the
