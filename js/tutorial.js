@@ -21,22 +21,24 @@ var tutorial = (function() {
     });
   }
 
-  // Getting data from the "public" category doesn't require any credentials.
+  // Getting data from the "public/tutorial" category doesn't require any credentials.
   // For writing to a user's public data, or reading/writing any of the other
   // categories, we need to do an OAuth request first to obtain a token.
 
   // This method opens a popup that sends the user to the OAuth dialog of the
   // remoteStorage provider.
-  function authorize(categories) {
+  function authorize(scopes) {
     var storageInfo = JSON.parse(localStorage.getItem('userStorageInfo'));
     var redirectUri = location.protocol + '//' + location.host + '/Node/unhosted-tutorial/receive_token.html';
 
-    // `createOAuthAddress` takes the `storageInfo`, the categories that we
+    // `createOAuthAddress` takes the `storageInfo`, the scopes that we
     // intend to access and a redirect URI that the storage provider sends the
     // user back to after authorization.
+    // The scope string for read-write access to public 'tutorial' data is 'public/tutorial:rw'
+    // The scope string for read-write access to default (private) 'tutorial' data is 'tutorial:rw'
     // That page extracts the token and sends it back to us, which is
     // [described here](token.html).
-    var oauthPage = remoteStorage.createOAuthAddress(storageInfo, categories, redirectUri);
+    var oauthPage = remoteStorage.createOAuthAddress(storageInfo, scopes, redirectUri);
     var popup = window.open(oauthPage);
   }
 
@@ -55,28 +57,31 @@ var tutorial = (function() {
   // `getStorageInfo` call and the category we want to access. If the
   // category is any other than "public", we also have to provide the OAuth
   // token.
-  function getData(category, key, callback) {
+  function getData(path, callback) {
     var storageInfo = JSON.parse(localStorage.getItem('userStorageInfo'));
     var client;
-
-    if (category == 'public/tutorial') {
-      client = remoteStorage.createClient(storageInfo, 'public/tutorial');
+    
+    if (path.split('/').length < 2) {
+      cb('error: path '+path+' contains no slashes');
+      return;
+    } else if(path.split('/')[0] == 'public') {
+      client = remoteStorage.createClient(storageInfo, '');
     } else {
       var token = localStorage.getItem('bearerToken');
-      client = remoteStorage.createClient(storageInfo, category, token);
+      client = remoteStorage.createClient(storageInfo, '', token);
     }
 
     // The client's `get` method takes a key and a callback. The callback will
     // be invoked with an error code and the data.
-    client.get(key, function(error, data) {
+    client.get(path, function(error, data) {
       if(error) {
-        alert('Could not find "' + key + '" in category "' + category + '" on the remoteStorage');
+        alert('Could not find "' + path + '" on the remoteStorage');
         console.log(error);
       } else {
         if (data == undefined) {
-          console.log('There wasn\'t anything for "' + key + '" in category "' + category + '"');
+          console.log('There wasn\'t anything for "' + path + '"');
         } else {
-          console.log('We received this for key "' + key + '" in category "' + category + '": ' + data);
+          console.log('We received this for item "' + path + '": ' + data);
         }
       }
 
@@ -87,17 +92,17 @@ var tutorial = (function() {
   // For saving data we use the client's `put` method. It takes a key, the
   // value and a callback. The callback will be called with an error code,
   // which is `null` on success.
-  function putData(category, key, value, callback) {
+  function putData(path, value, callback) {
     var storageInfo = JSON.parse(localStorage.getItem('userStorageInfo'));
     var token = localStorage.getItem('bearerToken');
-    var client = remoteStorage.createClient(storageInfo, category, token);
+    var client = remoteStorage.createClient(storageInfo, '', token);
 
-    client.put(key, value, function(error) {
+    client.put(path, value, function(error) {
       if (error) {
-        alert('Could not store "' + key + '" in "' + category + '" category');
+        alert('Could not store "' + path + '"');
         console.log(error);
       } else {
-        console.log('Stored "' + value + '" for key "' + key + '" in "' + category + '" category');
+        console.log('Stored "' + value + '" for item "' + path + '"');
       }
 
       callback(error);
