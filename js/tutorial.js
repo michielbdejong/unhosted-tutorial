@@ -74,7 +74,9 @@ var tutorial = (function() {
     // The client's `get` method takes a key and a callback. The callback will
     // be invoked with an error code and the data.
     client.get(path, function(error, data) {
-      if(error) {
+      if(error==401) {
+        alert('Your session has expired. Please connect to your remoteStorage again.');
+      } else if(error) {
         alert('Could not find "' + path + '" on the remoteStorage');
         console.log(error);
       } else {
@@ -98,7 +100,9 @@ var tutorial = (function() {
     var client = remoteStorage.createClient(storageInfo, '', token);
 
     client.put(path, value, function(error) {
-      if (error) {
+      if(error==401) {
+        alert('Your session has expired. Please connect to your remoteStorage again.');
+      } else if(error) {
         alert('Could not store "' + path + '"');
         console.log(error);
       } else {
