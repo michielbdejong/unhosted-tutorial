@@ -48,7 +48,7 @@ var tutorial = (function() {
     if(event.origin == location.protocol +'//'+ location.host) {
       console.log('Received an OAuth token: ' + event.data);
       localStorage.setItem('bearerToken', event.data);
-      helper.setAuthorizedState(true);
+      helper.setAuthorizedState(helper.isAuthorized());
     }
   }, false);
 
